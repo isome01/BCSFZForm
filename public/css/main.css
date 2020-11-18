@@ -1,0 +1,13 @@
+html {
+    position: absolute;
+    background: url("https://images.typeform.com/images/JSFmqpRBVdtk/background/large") no-repeat fixed center;
+    z-index: auto;
+    top: 0;
+    left: 0;
+    min-height: 1000px;
+    width: 100%;
+}
+
+body {
+    background: transparent;
+}
