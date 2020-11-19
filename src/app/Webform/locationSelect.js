@@ -9,36 +9,31 @@ const defaultOptions = fromJS([
   { value: 'vanilla', label: 'Vanilla' }
 ])
 
-const LocationSelect = ({onChange, value, currentValues, setValue, locationOptions, searchable}) => {
-  const options = locationOptions ? locationOptions.size() : defaultOptions
-
-  const handleChange = useCallback(e => {
-    setValue(e)
-    console.log(e)
-  }, [])
-
-  const location = currentValues.get('location', options.toJS()[0])
-  console.log(location)
+const LocationSelect = ({onChange, value, locationOptions, searchable}) => {
+  const options = locationOptions.size ? locationOptions : defaultOptions
 
   return (
     <Select
-      id='location'
-      value={location}
+      id='store_name'
+      value={{value, label: value}}
       options={options.toJS()}
-      onChange={handleChange}
+      onChange={e => onChange(e)}
       isSearchable={searchable}
     />
   )
 }
 
 LocationSelect.propTypes = {
-  currentValues: PropTypes.instanceOf(Map),
-  onChange: PropTypes.func,
+  locationOptions: PropTypes.instanceOf(List),
+  onChange: PropTypes.func.isRequired,
   options: PropTypes.instanceOf(List),
-  searchable: PropTypes.bool
+  searchable: PropTypes.bool,
+  value: PropTypes.string
 }
 
 LocationSelect.defaultProps = {
+  locationOptions: List(),
+  value: '',
   searchable: true
 }
 

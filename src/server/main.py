@@ -2,9 +2,11 @@ import csv
 import json
 import os
 from flask import Flask
+from flask_cors import CORS
 import re
 
 app = Flask(f'{__name__}')  # instantiate server
+CORS(app)
 
 def read_data():
     json_data = []

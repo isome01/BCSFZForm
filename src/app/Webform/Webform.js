@@ -1,22 +1,51 @@
-import React, {useCallback, useState} from 'react'
+import React, {useCallback, useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Map, List} from 'immutable'
+import {Map, List, fromJS} from 'immutable'
 import {useForm} from '../../hooks'
 import LocationSelect from './locationSelect'
+import {getPOCData} from '../api/webform'
 import './Webform.css'
 
 const Webform = () => {
-  const {currentValues, setInitialValues, setValue} = useForm()
+  const {currentValues, setInitialValues, setValue, setValues} = useForm()
   const [loading, setLoading] = useState(false)
-  const storeOpened = currentValues.get('storeOpened', '')
+  const [data, setData] = useState(List())
+  const storeOpened = Boolean(currentValues.get('open_date', ''))
   const phoneNumber = currentValues.get('signer-phone-number')
 
   const handleSubmit = useCallback(e => {
     e.preventDefault()
   }, [])
 
+  const handleAutofill = useCallback(e => {
+    console.warn('option: ', e)
+    const storeName = e.label
+    console.log('data...', data)
+    const values = data.toJS().find(datum => datum.store_name === storeName)
+    console.log('values', values)
+    setValues(fromJS(values))
+  }, [setValues, data])
+
+  useEffect(() => {
+    setLoading(true)
+    getPOCData()
+      .then(data => {
+        setData(fromJS(data))
+        setLoading(false)
+      })
+      .catch(err => {
+        console.log(err)
+        setLoading(false)
+      })
+  }, [setLoading])
+
+
+  const storeNames = data.toJS()
+    .filter(datum => datum.store_name)
+    .map(datum => ({value: datum.store_name, label: datum.store_name}))
+
   return (
-    <div className='fz-webform col-sm-8 offset-sm-2 col-md-8 offset-md-2'>
+    <div className='fz-webform col-lg-4 offset-lg-4'>
       <form onSubmit={handleSubmit}>
         <h1 style={{marginBottom: 50, borderBottom: 'solid #eee 1px'}}>Revel Order Form</h1>
         <div className='form-group'>
@@ -25,10 +54,9 @@ const Webform = () => {
             <div>
               <LocationSelect
                 className='form-control fz-input'
-                value={currentValues.get('location', '')}
-                onChange={e => setValue('location', e)}
-                currentValues={currentValues}
-                setValue={setValue}
+                value={currentValues.get('store_name', '')}
+                onChange={e => handleAutofill(e)}
+                locationOptions={fromJS(storeNames)}
               />
             </div>
           </div>
@@ -40,8 +68,8 @@ const Webform = () => {
               <input
                 id='address'
                 className='form-control fz-input'
-                value={currentValues.get('address', '')}
-                onChange={e => setValue('address', e.target.value)}
+                value={currentValues.get('address_line_1', '')}
+                onChange={e => setValue('address_line_1', e.target.value)}
               />
             </div>
           </div>
@@ -53,27 +81,21 @@ const Webform = () => {
               <label className='col-sm-6 float-left' style={{width: 50}}>
                 Yes
                 <input
-                  id='store-opened-1'
+                  id='open_date_2'
                   type='radio'
                   className='form-control fz-input'
-                  value={() => {
-                    const storeOpened = currentValues.get('storeOpened')
-                    return storeOpened === 'yes'
-                  }}
-                  onChange={e => setValue('storeOpened', e.target.checked ? 'yes' : 'no')}
+                  checked={storeOpened}
+                  onChange={e => setValue('store_opened', e.target.checked ? 'yes' : 'no')}
                 />
               </label>
               <label className='col-sm-6' style={{width: 50}}>
                 <label>No</label>
                 <input
-                  id='store-opened-2'
+                  id='open_date_1'
                   type='radio'
                   className='form-control fz-input'
-                  value={() => {
-                    const storeOpened = currentValues.get('storeOpened')
-                    return storeOpened !== 'yes'
-                  }}
-                  onChange={e => setValue('storeOpened', e.target.checked ? 'no' : 'yes')}
+                  checked={!storeOpened}
+                  onChange={e => setValue('store_opened', e.target.checked ? 'no' : 'yes')}
                 />
               </label>
             </div>
@@ -85,8 +107,8 @@ const Webform = () => {
                   id='opening-date'
                   type='date'
                   className='form-control fz-input'
-                  value={currentValues.get('opening-date', '')}
-                  onChange={e => setValue('opening-date', e.target.value)}
+                  value={currentValues.get('open_date', '')}
+                  onChange={e => setValue('open_date', e.target.value)}
                 />
               </div>
             </div>
@@ -98,10 +120,10 @@ const Webform = () => {
             <label htmlFor='entityId'>Legal Entity Name</label>
             <div>
               <input
-                id='entityId'
+                id='entity'
                 className='form-control fz-input'
-                value={currentValues.get('entityId', '')}
-                onChange={e => setValue('entityId', e.target.value)}
+                value={currentValues.get('entity', '')}
+                onChange={e => setValue('entity', e.target.value)}
               />
             </div>
           </div>
@@ -138,12 +160,12 @@ const Webform = () => {
             <label htmlFor='signer-phone-number'>Signer Phone Number</label>
             <div>
               <input
-                id='signer-phone-number'
+                id='phone'
                 type='phone'
                 placeholder='ex: 1-(323)-542-3725'
                 className='form-control fz-input'
-                value={currentValues.get('signer-phone-number', '')}
-                onChange={e => setValue('signer-phone-number', e.target.value)}
+                value={currentValues.get('phone', '')}
+                onChange={e => setValue('phone', e.target.value)}
               />
             </div>
           </div>
