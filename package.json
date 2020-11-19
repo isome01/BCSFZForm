@@ -6,8 +6,8 @@
   "scripts": {
     "build": "webpack --mode development",
     "client": "webpack --mode development && webpack-dev-server --mode development",
-    "backend": "nodemon ./dist/server.bundle.js",
-    "start": "concurrently \"npm run client\""
+    "backend": "python ./src/server/main.py",
+    "start": "concurrently \"npm run client\" \"npm run backend\""
   },
   "repository": {
     "type": "git",
@@ -48,6 +48,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "helmet": "^3.21.2",
+    "image-loader": "^0.0.1",
     "immutable": "^4.0.0-rc.12",
     "jquery": "^3.4.1",
     "moment": "^2.24.0",

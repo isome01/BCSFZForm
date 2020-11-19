@@ -3665,6 +3665,11 @@ ignore-by-default@^1.0.1:
   resolved "https://registry.yarnpkg.com/ignore-by-default/-/ignore-by-default-1.0.1.tgz#48ca6d72f6c6a3af00a9ad4ae6876be3889e2b09"
   integrity sha1-SMptcvbGo68Aqa1K5odr44ieKwk=
 
+image-loader@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/image-loader/-/image-loader-0.0.1.tgz#980ed82e56a0f9de7f053e7268f4002389aa97ca"
+  integrity sha1-mA7YLlag+d5/BT5yaPQAI4mql8o=
+
 immutable@^4.0.0-rc.12:
   version "4.0.0-rc.12"
   resolved "https://registry.yarnpkg.com/immutable/-/immutable-4.0.0-rc.12.tgz#ca59a7e4c19ae8d9bf74a97bdf0f6e2f2a5d0217"
